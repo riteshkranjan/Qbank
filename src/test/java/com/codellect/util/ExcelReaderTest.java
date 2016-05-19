@@ -56,8 +56,12 @@ public class ExcelReaderTest {
     @Test
     public void testGetQuestionByLevel() {
         System.out.println("getQuestionByLevel");
-        System.out.println(e.getQuestionByLevel(0));
         assertEquals(15, e.getQuestionByLevel(0).size());
+        assertEquals(1, e.getQuestionByLevel(0).get(0).getId());
+        assertEquals(0, e.getQuestionByLevel(0).get(0).getLevel());
+        assertEquals("C/C++", e.getQuestionByLevel(0).get(0).getTag());
+        assertEquals("Explain Pointers in C", e.getQuestionByLevel(0).get(0).getQuestion());
+        
         assertEquals(11, e.getQuestionByLevel(1).size());
         assertEquals(6, e.getQuestionByLevel(2).size());
         assertEquals(4, e.getQuestionByLevel(3).size());
