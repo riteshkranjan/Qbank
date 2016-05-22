@@ -50,6 +50,10 @@ public class QbankBean {
 
     @Override
     public String toString() {
-        return "id=" + id + ", level=" + level + ", tag=" + tag + "\nStatement : " + question;
+        StringBuilder sb = new StringBuilder("-----------------------------------------\n");
+        sb.append("| ").append("id=").append(id).append(", level=").append(level).append(", tag=").append(tag).append("\n");
+        sb.append("-----------------------------------------\n");
+        sb.append("\033[0;1m Statement : ").append(question).append("\033[0;0m");
+        return sb.toString();
     }
 }

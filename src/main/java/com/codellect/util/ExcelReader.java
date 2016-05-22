@@ -53,6 +53,8 @@ public class ExcelReader {
             }
         } catch (IOException ex) {
             log.error(ex.getMessage());
+            System.out.println("\033[0;1m"+ex.getMessage());
+            System.out.println("Please place the data.xlsx file here or provide path of data file as in command line argument"+"\033[0;0m");
         }
     }
 
