@@ -5,11 +5,10 @@
  */
 package com.codellect.util;
 
+import javax.swing.*;
 import java.io.File;
-import javax.swing.JOptionPane;
 
 /**
- *
  * @author Ritesh
  */
 public class CommonUtils {
@@ -27,25 +26,38 @@ public class CommonUtils {
     }
 
     public static int reviseLevel(int choice, int level, int levelCount) {
-        if(choice < 0) {
+        if (choice < 0) {
             JOptionPane.showMessageDialog(null, "Please enters a valid selection");
             System.out.print("Enter selection (1/2/3/4/5/6) : ");
             return -1;
         }
-        switch(choice){
+        switch (choice) {
             case 1:
             case 6:
                 break;
-            case 2: {level++;break;}
-            case 3: {level++;level++;break;}
-            case 4: {level = 0;break;}
-            case 5: {level--;break;}
-            default : {
-                    JOptionPane.showMessageDialog(null, choice+" not a valid selection");
-                    System.out.print("Enter selection (1/2/3/4/5/6) : ");
-                    return -1;
-                }
+            case 2: {
+                level++;
+                break;
             }
+            case 3: {
+                level++;
+                level++;
+                break;
+            }
+            case 4: {
+                level = 0;
+                break;
+            }
+            case 5: {
+                level--;
+                break;
+            }
+            default: {
+                JOptionPane.showMessageDialog(null, choice + " not a valid selection");
+                System.out.print("Enter selection (1/2/3/4/5/6) : ");
+                return -1;
+            }
+        }
         if (level >= levelCount) return levelCount - 1;
         return Math.max(level, 0);
     }

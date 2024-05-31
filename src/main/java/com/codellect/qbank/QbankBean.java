@@ -6,7 +6,6 @@
 package com.codellect.qbank;
 
 /**
- *
  * @author Ritesh
  */
 public class QBankBean {

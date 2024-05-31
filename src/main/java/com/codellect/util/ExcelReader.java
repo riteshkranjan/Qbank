@@ -6,20 +6,20 @@
 package com.codellect.util;
 
 import com.codellect.qbank.QBankBean;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
- *
  * @author Ritesh
  */
 public class ExcelReader {
@@ -37,7 +37,7 @@ public class ExcelReader {
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = firstSheet.iterator();
             Row nextRow = iterator.next();
-            System.out.println("Row "+ nextRow.getRowNum() + " skipped");
+            System.out.println("Row " + nextRow.getRowNum() + " skipped");
             while (iterator.hasNext()) {
                 nextRow = iterator.next();
                 short count = nextRow.getLastCellNum();
@@ -51,8 +51,8 @@ public class ExcelReader {
                 }
             }
         } catch (IOException ex) {
-            System.out.println("\033[0;1m"+ex.getMessage());
-            System.out.println("Please place the data.xlsx file here or provide path of data file as in command line argument"+"\033[0;0m");
+            System.out.println("\033[0;1m" + ex.getMessage());
+            System.out.println("Please place the data.xlsx file here or provide path of data file as in command line argument" + "\033[0;0m");
         }
     }
 

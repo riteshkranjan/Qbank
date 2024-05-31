@@ -17,34 +17,20 @@ public class QBankLauncher extends JFrame {
     private final JTextArea questionTextArea;
     private final JTextArea infoTextArea;
 
-    public static void main(String[] args) {
-
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    QBankLauncher qBankLauncher = new QBankLauncher();
-                    qBankLauncher.setVisible(true);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
-            }
-        });
-
-    }
-
-    public QBankLauncher(){
+    public QBankLauncher() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100,100,700,700);
+        setBounds(100, 100, 700, 700);
         contentPanel = new JPanel();
-        contentPanel.setBorder(new EmptyBorder(5,5,5,5));
-        contentPanel.setLayout(new BorderLayout(0,0));
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPanel.setLayout(new BorderLayout(0, 0));
         setContentPane(contentPanel);
         setName("UCA Question Bank");
         setTitle("UCA Question Bank");
         contentPanel.setLayout(null);
 
+        infoTextArea = new JTextArea();
         questionTextArea = new JTextArea();
+
         questionTextArea.setEditable(false);
 
         questionTextArea.setFont(new Font("SansSerif", Font.PLAIN, 16));
@@ -52,24 +38,30 @@ public class QBankLauncher extends JFrame {
         questionTextArea.setBounds(80, 130, 500, 286);
         contentPanel.add(questionTextArea);
 
-        infoTextArea = new JTextArea();
-        infoTextArea.setEditable(false);
-        infoTextArea.setEnabled(true);
 
-        infoTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
-        infoTextArea.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        infoTextArea.setBounds(80, 96, 500, 30);
-        contentPanel.add(infoTextArea);
+        if (e.getAllQuestions().isEmpty()) {
+            questionTextArea.setText("No questions loaded. Please place correct excel sheet file at root.");
 
-        int x = 80;
-        int space  = 150;
-        addGetQuestionButton("Level 0", 0, x);
-        x += space;
-        addGetQuestionButton("Level 1", 1, x);
-        x += space;
-        addGetQuestionButton("Level 2", 2, x);
-        x += space;
-        addGetQuestionButton("Level 3", 3, x);
+        } else {
+
+            infoTextArea.setEditable(false);
+            infoTextArea.setEnabled(true);
+
+            infoTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
+            infoTextArea.setBorder(new LineBorder(new Color(0, 0, 0), 2));
+            infoTextArea.setBounds(80, 96, 500, 30);
+            contentPanel.add(infoTextArea);
+
+            int x = 80;
+            int space = 150;
+            addGetQuestionButton("Level 0", 0, x);
+            x += space;
+            addGetQuestionButton("Level 1", 1, x);
+            x += space;
+            addGetQuestionButton("Level 2", 2, x);
+            x += space;
+            addGetQuestionButton("Level 3", 3, x);
+        }
 
         JButton close = new JButton("Close");
         close.addActionListener(new ActionListener() {
@@ -82,6 +74,23 @@ public class QBankLauncher extends JFrame {
         close.setBackground(Color.GRAY);
         close.setBounds(290, 425, 90, 20);
         contentPanel.add(close);
+
+    }
+
+    public static void main(String[] args) {
+
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    QBankLauncher qBankLauncher = new QBankLauncher();
+                    qBankLauncher.setVisible(true);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+
     }
 
     private void addGetQuestionButton(String text, final int level, int x) {
@@ -110,16 +119,16 @@ public class QBankLauncher extends JFrame {
 
     public QBankBean getQuestionByLevel(int level) {
         int index = (int) Math.abs(Math.random() * e.getQuestionByLevel(level).size());
-        return  e.getQuestionByLevel(level).get(index);
+        return e.getQuestionByLevel(level).get(index);
     }
 
-    public String buildInfoTextArea(QBankBean q){
+    public String buildInfoTextArea(QBankBean q) {
         return "Id : " + q.getId() +
                 "\t Level: " + q.getLevel() +
                 "\t Tag: " + q.getTag();
     }
 
-    public String buildQuestionTextArea(QBankBean q){
+    public String buildQuestionTextArea(QBankBean q) {
         return q.getQuestion();
     }
 

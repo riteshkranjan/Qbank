@@ -5,29 +5,29 @@
  */
 package com.codellect.qbank;
 
-import com.codellect.util.ExcelReader;
 import com.codellect.util.CommonUtils;
+import com.codellect.util.ExcelReader;
+
 import java.util.Scanner;
 
 /**
- *
  * @author Ritesh
  */
 public class QBank {
 
     public static void main(String[] args) {
-        String fileName = args.length>0?args[0]:"data.xlsx";
+        String fileName = args.length > 0 ? args[0] : "data.xlsx";
         ExcelReader e = CommonUtils.loadExcelData(fileName);
         Scanner sc = new Scanner(System.in);
-        if(e.getAllQuestions().isEmpty()){
+        if (e.getAllQuestions().isEmpty()) {
             System.out.println("Press any key followed by ENTER to exit...");
             sc.next();
-        }else{
+        } else {
             int level = 0;
-            
+
             printWelcomeMsg();
             while (true) {
-                if(level>=0){
+                if (level >= 0) {
                     int index = (int) Math.abs(Math.random() * e.getQuestionByLevel(level).size());
                     System.out.println();
                     QBankBean q = e.getQuestionByLevel(level).get(index);
@@ -47,7 +47,7 @@ public class QBank {
             }
         }
     }
-    
+
     private static void printWelcomeMsg() {
         System.out.println("*******************************************");
         System.out.println("*      Welcome to UCA selection Test      *");
