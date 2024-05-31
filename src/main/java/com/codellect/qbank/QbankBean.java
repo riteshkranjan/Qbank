@@ -9,7 +9,7 @@ package com.codellect.qbank;
  *
  * @author Ritesh
  */
-public class QbankBean {
+public class QBankBean {
 
     private int id;
     private int level;
@@ -50,10 +50,8 @@ public class QbankBean {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("-----------------------------------------\n");
-        sb.append("| ").append("id=").append(id).append(", level=").append(level).append(", tag=").append(tag).append("\n");
-        sb.append("-----------------------------------------\n");
-        sb.append("\033[0;1m Statement : ").append(question).append("\033[0;0m");
-        return sb.toString();
+        return "-----------------------------------------\n" + "| " + "id=" + id + ", level=" + level + ", tag=" + tag + "\n" +
+                "-----------------------------------------\n" +
+                "\033[0;1m Statement : " + question + "\033[0;0m";
     }
 }

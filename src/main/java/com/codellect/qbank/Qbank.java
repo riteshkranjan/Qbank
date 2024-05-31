@@ -13,7 +13,7 @@ import java.util.Scanner;
  *
  * @author Ritesh
  */
-public class Qbank {
+public class QBank {
 
     public static void main(String[] args) {
         String fileName = args.length>0?args[0]:"data.xlsx";
@@ -29,8 +29,8 @@ public class Qbank {
             while (true) {
                 if(level>=0){
                     int index = (int) Math.abs(Math.random() * e.getQuestionByLevel(level).size());
-                    System.out.println("");
-                    QbankBean q = e.getQuestionByLevel(level).get(index);
+                    System.out.println();
+                    QBankBean q = e.getQuestionByLevel(level).get(index);
                     System.out.println(q);
                     System.out.println("\n1. Continue Level");
                     System.out.println("2. Next Level");

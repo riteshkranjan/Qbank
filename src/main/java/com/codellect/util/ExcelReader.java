@@ -5,14 +5,13 @@
  */
 package com.codellect.util;
 
-import com.codellect.qbank.QbankBean;
+import com.codellect.qbank.QBankBean;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -25,9 +24,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelReader {
 
-    private final Logger log = Logger.getLogger(ExcelReader.class);
     private final File excel;
-    List<List<QbankBean>> questions = new ArrayList<>();
+    List<List<QBankBean>> questions = new ArrayList<>();
 
     public ExcelReader(File excel) {
         this.excel = excel;
@@ -39,11 +37,12 @@ public class ExcelReader {
             Sheet firstSheet = workbook.getSheetAt(0);
             Iterator<Row> iterator = firstSheet.iterator();
             Row nextRow = iterator.next();
+            System.out.println("Row "+ nextRow.getRowNum() + " skipped");
             while (iterator.hasNext()) {
                 nextRow = iterator.next();
                 short count = nextRow.getLastCellNum();
                 if (count == 4 & notEmpty(nextRow.getCell(ColumnType.STATEMENT.value()))) {
-                    QbankBean qbankBean = new QbankBean();
+                    QBankBean qbankBean = new QBankBean();
                     qbankBean.setId((int) nextRow.getCell(ColumnType.ID.value()).getNumericCellValue());
                     qbankBean.setLevel((int) nextRow.getCell(ColumnType.LEVEL.value()).getNumericCellValue());
                     qbankBean.setTag(nextRow.getCell(ColumnType.TAG.value()).getStringCellValue());
@@ -57,13 +56,13 @@ public class ExcelReader {
         }
     }
 
-    private void push(QbankBean qbankBean) {
+    private void push(QBankBean qbankBean) {
         if (qbankBean.getQuestion() == null) {
             return;
         }
         int level = qbankBean.getLevel();
         while (getLevelCount() <= level) {
-            List<QbankBean> q = new ArrayList<>();
+            List<QBankBean> q = new ArrayList<>();
             questions.add(q);
         }
         questions.get(level).add(qbankBean);
@@ -73,16 +72,16 @@ public class ExcelReader {
         return questions.size();
     }
 
-    public List<QbankBean> getQuestionByLevel(int level) {
+    public List<QBankBean> getQuestionByLevel(int level) {
         return questions.get(level);
     }
 
-    public List<List<QbankBean>> getAllQuestions() {
+    public List<List<QBankBean>> getAllQuestions() {
         return questions;
     }
 
     private boolean notEmpty(Cell cell) {
-        return cell != null && !cell.getStringCellValue().equals("");
+        return cell != null && !cell.getStringCellValue().isEmpty();
     }
 
     private enum ColumnType {
