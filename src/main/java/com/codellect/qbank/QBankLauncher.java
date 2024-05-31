@@ -11,14 +11,16 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class QBankLauncher extends JFrame {
-    private static final int width = 700;
     public static final String ALL = "All";
+    private static final int width = 700;
     private final JPanel contentPanel;
     private final ExcelReader e = CommonUtils.loadExcelData("data.xlsx");
     private final JTextArea questionTextArea;
-    private final JTextArea infoTextArea;
+    private final JTextPane infoTextArea;
 
     private final ButtonGroup buttonGroup = new ButtonGroup();
+
+    private final ButtonGroup levelButtonGroup = new ButtonGroup();
 
     public QBankLauncher() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,14 +33,14 @@ public class QBankLauncher extends JFrame {
         setTitle("UCA Question Bank");
         contentPanel.setLayout(null);
 
-        infoTextArea = new JTextArea();
+        infoTextArea = new JTextPane();
         questionTextArea = new JTextArea();
 
         questionTextArea.setEditable(false);
 
         questionTextArea.setFont(new Font("SansSerif", Font.PLAIN, 16));
         questionTextArea.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-        questionTextArea.setBounds(80, 130, 500, 286);
+        questionTextArea.setBounds(80, 96, 500, 286);
         contentPanel.add(questionTextArea);
 
 
@@ -48,11 +50,10 @@ public class QBankLauncher extends JFrame {
         } else {
 
             infoTextArea.setEditable(false);
-            infoTextArea.setEnabled(true);
+            infoTextArea.setOpaque(false);
 
             infoTextArea.setFont(new Font("SansSerif", Font.BOLD, 16));
-            infoTextArea.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-            infoTextArea.setBounds(80, 96, 500, 30);
+            infoTextArea.setBounds(80, 400, 500, 30);
             contentPanel.add(infoTextArea);
 
             int x = 80;
@@ -67,7 +68,7 @@ public class QBankLauncher extends JFrame {
                 x += space;
             }
             x = 80;
-            y = 425;
+            y = 72;
             List<String> tags = e.getAllTags();
             addTagCheckBox(tags, x, y, contentPanel);
         }
@@ -118,26 +119,24 @@ public class QBankLauncher extends JFrame {
 
 
     private void addGetQuestionButton(final int level, int x, int y) {
-        JButton button1 = new JButton("Level " + level);
+        JToggleButton button1 = new JToggleButton("Level " + level);
         button1.setOpaque(true);
         button1.setBackground(Color.PINK);
         button1.addActionListener(e -> {
             questionTextArea.setText("");
             infoTextArea.setText("");
             String tag = getSelectedTag();
-            QBankBean q = getQuestionByLevel(level, tag);
+            java.util.List<QBankBean> questions = getQuestionsByLevelAndTag(level, tag);
+            QBankBean q = questions.isEmpty() ? null : questions.get((int) Math.abs(Math.random() * questions.size()));
             questionTextArea.setBackground(Color.WHITE);
             questionTextArea.setLineWrap(true);
             questionTextArea.setWrapStyleWord(true);
             questionTextArea.setText(buildQuestionTextArea(q));
-
-            infoTextArea.setBackground(Color.WHITE);
-            infoTextArea.setLineWrap(true);
-            infoTextArea.setWrapStyleWord(true);
-            infoTextArea.setText(buildInfoTextArea(q));
+            infoTextArea.setText(buildInfoTextArea(questions.size()));
         });
         button1.setBounds(x, y, 90, 20);
         contentPanel.add(button1);
+        levelButtonGroup.add(button1);
     }
 
     private String getSelectedTag() {
@@ -151,25 +150,22 @@ public class QBankLauncher extends JFrame {
         return ALL;
     }
 
-    public QBankBean getQuestionByLevel(int level, String tag) {
+    public java.util.List<QBankBean> getQuestionsByLevelAndTag(int level, String tag) {
         List<QBankBean> response;
         if (tag.equalsIgnoreCase(ALL)) {
             response = e.getQuestionByLevel(level);
         } else {
             response = e.getQuestionByLevelAndTags(level, tag);
         }
-        int index = (int) Math.abs(Math.random() * response.size());
-        return response.get(index);
+        return response;
     }
 
-    public String buildInfoTextArea(QBankBean q) {
-        return "Id : " + q.getId() +
-                "\t Level: " + q.getLevel() +
-                "\t Tag: " + q.getTag();
+    public String buildInfoTextArea(int size) {
+        return "\tTotal " + size + " question(s) found";
     }
 
     public String buildQuestionTextArea(QBankBean q) {
-        return q.getQuestion();
+        return q == null ? "No Questions Found!! Please try with different tag/level" : q.getQuestion() + "\n\n\nTag : " + q.getTag();
     }
 
 }
