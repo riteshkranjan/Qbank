@@ -73,10 +73,10 @@ public class ExcelReaderTest {
     @Test
     public void testGetAllQuestions() {
         System.out.println("getAllQuestions");
-        assertEquals(4, e.getAllQuestions().size());
-        assertEquals(15, e.getAllQuestions().get(0).size());
-        assertEquals(11, e.getAllQuestions().get(1).size());
-        assertEquals(6, e.getAllQuestions().get(2).size());
-        assertEquals(4, e.getAllQuestions().get(3).size());
+        assertEquals(4, e.getLevelCount());
+        assertEquals(15, e.getQuestionByLevel(0).size());
+        assertEquals(11, e.getQuestionByLevel(1).size());
+        assertEquals(6, e.getQuestionByLevel(2).size());
+        assertEquals(4, e.getQuestionByLevel(3).size());
     }
 }
