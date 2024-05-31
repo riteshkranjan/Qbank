@@ -8,6 +8,7 @@ package com.codellect.qbank;
 import com.codellect.util.CommonUtils;
 import com.codellect.util.ExcelReader;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -28,9 +29,10 @@ public class QBank {
             printWelcomeMsg();
             while (true) {
                 if (level >= 0) {
-                    int index = (int) Math.abs(Math.random() * e.getQuestionByLevel(level).size());
+                    List<QBankBean> response = e.getQuestionByLevel(level);
+                    int index = (int) Math.abs(Math.random() * response.size());
                     System.out.println();
-                    QBankBean q = e.getQuestionByLevel(level).get(index);
+                    QBankBean q = response.get(index);
                     System.out.println(q);
                     System.out.println("\n1. Continue Level");
                     System.out.println("2. Next Level");

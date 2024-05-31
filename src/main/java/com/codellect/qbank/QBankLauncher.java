@@ -7,19 +7,22 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Enumeration;
+import java.util.List;
 
 public class QBankLauncher extends JFrame {
+    private static final int width = 700;
+    public static final String ALL = "All";
     private final JPanel contentPanel;
     private final ExcelReader e = CommonUtils.loadExcelData("data.xlsx");
-
     private final JTextArea questionTextArea;
     private final JTextArea infoTextArea;
 
+    private final ButtonGroup buttonGroup = new ButtonGroup();
+
     public QBankLauncher() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 700, 700);
+        setBounds(100, 100, width, 700);
         contentPanel = new JPanel();
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPanel.setLayout(new BorderLayout(0, 0));
@@ -53,73 +56,110 @@ public class QBankLauncher extends JFrame {
             contentPanel.add(infoTextArea);
 
             int x = 80;
+            int y = 23;
             int space = 150;
-            addGetQuestionButton("Level 0", 0, x);
-            x += space;
-            addGetQuestionButton("Level 1", 1, x);
-            x += space;
-            addGetQuestionButton("Level 2", 2, x);
-            x += space;
-            addGetQuestionButton("Level 3", 3, x);
+            for (int i = 0; i < e.getLevelCount(); i++) {
+                if (x + 90 > 700) {
+                    x = 80;
+                    y += 23;
+                }
+                addGetQuestionButton(i, x, y);
+                x += space;
+            }
+            x = 80;
+            y = 425;
+            List<String> tags = e.getAllTags();
+            addTagCheckBox(tags, x, y, contentPanel);
         }
 
         JButton close = new JButton("Close");
-        close.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        close.addActionListener(e -> System.exit(0));
         close.setOpaque(true);
         close.setBackground(Color.GRAY);
-        close.setBounds(290, 425, 90, 20);
+        close.setBounds(290, 450, 90, 20);
         contentPanel.add(close);
 
     }
 
+
     public static void main(String[] args) {
 
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    QBankLauncher qBankLauncher = new QBankLauncher();
-                    qBankLauncher.setVisible(true);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                QBankLauncher qBankLauncher = new QBankLauncher();
+                qBankLauncher.setVisible(true);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         });
 
     }
 
-    private void addGetQuestionButton(String text, final int level, int x) {
-        JButton button1 = new JButton(text);
+    private void addTagCheckBox(List<String> tags, int x, int y, JPanel panel) {
+        for (String tag : tags) {
+            JRadioButton jRadioButton = new JRadioButton(tag);
+            jRadioButton.setText(tag);
+            jRadioButton.setBounds(x, y, 100, 20);
+            x += 100;
+            if (x > 700) {
+                x = 80;
+                y += 23;
+            }
+            buttonGroup.add(jRadioButton);
+            panel.add(jRadioButton);
+        }
+        JRadioButton jRadioButton = new JRadioButton(ALL);
+        jRadioButton.setText(ALL);
+        jRadioButton.setBounds(x, y, 100, 20);
+        jRadioButton.setSelected(true);
+        buttonGroup.add(jRadioButton);
+        panel.add(jRadioButton);
+    }
+
+
+    private void addGetQuestionButton(final int level, int x, int y) {
+        JButton button1 = new JButton("Level " + level);
         button1.setOpaque(true);
         button1.setBackground(Color.PINK);
-        button1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                questionTextArea.setText("");
-                infoTextArea.setText("");
-                QBankBean q = getQuestionByLevel(level);
-                questionTextArea.setBackground(Color.WHITE);
-                questionTextArea.setLineWrap(true);
-                questionTextArea.setWrapStyleWord(true);
-                questionTextArea.setText(buildQuestionTextArea(q));
+        button1.addActionListener(e -> {
+            questionTextArea.setText("");
+            infoTextArea.setText("");
+            String tag = getSelectedTag();
+            QBankBean q = getQuestionByLevel(level, tag);
+            questionTextArea.setBackground(Color.WHITE);
+            questionTextArea.setLineWrap(true);
+            questionTextArea.setWrapStyleWord(true);
+            questionTextArea.setText(buildQuestionTextArea(q));
 
-                infoTextArea.setBackground(Color.WHITE);
-                infoTextArea.setLineWrap(true);
-                infoTextArea.setWrapStyleWord(true);
-                infoTextArea.setText(buildInfoTextArea(q));
-            }
+            infoTextArea.setBackground(Color.WHITE);
+            infoTextArea.setLineWrap(true);
+            infoTextArea.setWrapStyleWord(true);
+            infoTextArea.setText(buildInfoTextArea(q));
         });
-        button1.setBounds(x, 23, 90, 20);
+        button1.setBounds(x, y, 90, 20);
         contentPanel.add(button1);
     }
 
-    public QBankBean getQuestionByLevel(int level) {
-        int index = (int) Math.abs(Math.random() * e.getQuestionByLevel(level).size());
-        return e.getQuestionByLevel(level).get(index);
+    private String getSelectedTag() {
+        Enumeration<AbstractButton> bb = buttonGroup.getElements();
+        while (bb.hasMoreElements()) {
+            JRadioButton button = (JRadioButton) bb.nextElement();
+            if (button.isSelected()) {
+                return button.getText();
+            }
+        }
+        return ALL;
+    }
+
+    public QBankBean getQuestionByLevel(int level, String tag) {
+        List<QBankBean> response;
+        if (tag.equalsIgnoreCase(ALL)) {
+            response = e.getQuestionByLevel(level);
+        } else {
+            response = e.getQuestionByLevelAndTags(level, tag);
+        }
+        int index = (int) Math.abs(Math.random() * response.size());
+        return response.get(index);
     }
 
     public String buildInfoTextArea(QBankBean q) {

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Ritesh
@@ -25,7 +26,7 @@ import java.util.List;
 public class ExcelReader {
 
     private final File excel;
-    List<List<QBankBean>> questions = new ArrayList<>();
+    List<QBankBean> questions = new ArrayList<>();
 
     public ExcelReader(File excel) {
         this.excel = excel;
@@ -60,23 +61,34 @@ public class ExcelReader {
         if (qbankBean.getQuestion() == null) {
             return;
         }
-        int level = qbankBean.getLevel();
-        while (getLevelCount() <= level) {
-            List<QBankBean> q = new ArrayList<>();
-            questions.add(q);
-        }
-        questions.get(level).add(qbankBean);
+        questions.add(qbankBean);
     }
 
     public int getLevelCount() {
-        return questions.size();
+        return questions.stream()
+                .collect(Collectors.groupingBy(QBankBean::getLevel))
+                .size();
+    }
+
+    public List<String> getAllTags() {
+        return new ArrayList<>(questions.stream()
+                .collect(Collectors.groupingBy(QBankBean::getTag))
+                .keySet());
     }
 
     public List<QBankBean> getQuestionByLevel(int level) {
-        return questions.get(level);
+        return questions.stream()
+                .filter(x -> x.getLevel() == level)
+                .collect(Collectors.toList());
     }
 
-    public List<List<QBankBean>> getAllQuestions() {
+    public List<QBankBean> getQuestionByLevelAndTags(int level, String tag) {
+        return getQuestionByLevel(level).stream()
+                .filter(x -> x.getTag().equalsIgnoreCase(tag))
+                .collect(Collectors.toList());
+    }
+
+    public List<QBankBean> getAllQuestions() {
         return questions;
     }
 
