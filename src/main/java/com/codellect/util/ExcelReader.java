@@ -42,12 +42,15 @@ public class ExcelReader {
             while (iterator.hasNext()) {
                 nextRow = iterator.next();
                 short count = nextRow.getLastCellNum();
-                if (count == 4 & notEmpty(nextRow.getCell(ColumnType.STATEMENT.value()))) {
+                if (count >= 4 & notEmpty(nextRow.getCell(ColumnType.STATEMENT.value()))) {
                     QBankBean qbankBean = new QBankBean();
                     qbankBean.setId((int) nextRow.getCell(ColumnType.ID.value()).getNumericCellValue());
                     qbankBean.setLevel((int) nextRow.getCell(ColumnType.LEVEL.value()).getNumericCellValue());
                     qbankBean.setTag(nextRow.getCell(ColumnType.TAG.value()).getStringCellValue());
                     qbankBean.setQuestion(nextRow.getCell(ColumnType.STATEMENT.value()).getStringCellValue());
+                    if (count > 4) {
+                        qbankBean.setHint(nextRow.getCell(ColumnType.HINT.value()).getStringCellValue());
+                    }
                     push(qbankBean);
                 }
             }
@@ -101,7 +104,9 @@ public class ExcelReader {
         ID(0),
         LEVEL(1),
         TAG(2),
-        STATEMENT(3);
+        STATEMENT(3),
+
+        HINT(4);
         private final int key;
 
         ColumnType(int key) {

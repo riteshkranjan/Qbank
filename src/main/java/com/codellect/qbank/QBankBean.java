@@ -15,6 +15,8 @@ public class QBankBean {
     private String tag;
     private String question;
 
+    private String hint;
+
     public int getId() {
         return id;
     }
@@ -45,6 +47,14 @@ public class QBankBean {
 
     public void setQuestion(String question) {
         this.question = question;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     @Override

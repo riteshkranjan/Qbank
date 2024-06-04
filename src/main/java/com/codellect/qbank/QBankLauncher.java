@@ -2,7 +2,6 @@ package com.codellect.qbank;
 
 import com.codellect.util.CommonUtils;
 import com.codellect.util.ExcelReader;
-import static com.codellect.util.AppConstants.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
+
+import static com.codellect.util.AppConstants.*;
 
 public class QBankLauncher extends JFrame {
 
@@ -23,6 +24,8 @@ public class QBankLauncher extends JFrame {
     private final ButtonGroup buttonGroup = new ButtonGroup();
 
     private final ButtonGroup levelButtonGroup = new ButtonGroup();
+
+    private QBankBean q;
 
     public QBankLauncher() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,7 +54,6 @@ public class QBankLauncher extends JFrame {
         contentPanel.add(questionTextArea);
 
 
-
         if (e.getAllQuestions().isEmpty()) {
             questionTextArea.setText("No questions loaded. Please place correct excel sheet file at root.");
 
@@ -66,8 +68,43 @@ public class QBankLauncher extends JFrame {
 
             buildLevelButtons();
             buildTagRadioButtons();
+            buildHint();
         }
         addCloseButton();
+    }
+
+    public static void main(String[] args) {
+
+        EventQueue.invokeLater(() -> {
+            try {
+                QBankLauncher qBankLauncher = new QBankLauncher();
+                qBankLauncher.setVisible(true);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        });
+
+    }
+
+    private void buildHint() {
+        JCheckBox checkBox = new JCheckBox("Show hint");
+        checkBox.setBounds(290, 430, 90, 20);
+        contentPanel.add(checkBox);
+        checkBox.setSelected(false);
+
+        checkBox.addActionListener(e -> {
+            if (checkBox.isSelected()) {
+                JOptionPane.showMessageDialog(contentPanel, getHint());
+            }
+            checkBox.setSelected(false);
+        });
+    }
+
+    private String getHint() {
+        if (q == null) {
+            return "Please launch a question first";
+        }
+        return q.getHint() == null ? "No hint available" : q.getHint();
     }
 
     private void addCloseButton() {
@@ -102,20 +139,6 @@ public class QBankLauncher extends JFrame {
         }
     }
 
-
-    public static void main(String[] args) {
-
-        EventQueue.invokeLater(() -> {
-            try {
-                QBankLauncher qBankLauncher = new QBankLauncher();
-                qBankLauncher.setVisible(true);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        });
-
-    }
-
     private void addRadioButton(List<String> tags, int x, int y) {
         for (String tag : tags) {
             JRadioButton jRadioButton = new JRadioButton(tag);
@@ -147,7 +170,7 @@ public class QBankLauncher extends JFrame {
             infoTextArea.setText("");
             String tag = getSelectedTag();
             java.util.List<QBankBean> questions = getQuestionsByLevelAndTag(level, tag);
-            QBankBean q = questions.isEmpty() ? null : questions.get((int) Math.abs(Math.random() * questions.size()));
+            q = questions.isEmpty() ? null : questions.get((int) Math.abs(Math.random() * questions.size()));
             questionTextArea.setBackground(Color.WHITE);
             questionTextArea.setLineWrap(true);
             questionTextArea.setWrapStyleWord(true);
