@@ -24,7 +24,12 @@ public class ExcelReaderTest {
     
     @BeforeClass
     public static void setUpClass() {
-        File f = new File(".\\src\\test\\resource\\test_data.xlsx");
+        String fileName = "." + File.separator +
+                "src" + File.separator +
+                "test" + File.separator +
+                "resource" + File.separator +
+                "test_data.xlsx";
+        File f = new File(fileName);
         e = new ExcelReader(f);
     }
     
