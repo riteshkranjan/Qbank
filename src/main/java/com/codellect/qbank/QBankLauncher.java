@@ -104,7 +104,7 @@ public class QBankLauncher extends JFrame {
         if (q == null) {
             return "Please launch a question first";
         }
-        return q.getHint() == null ? "No hint available" : q.getHint();
+        return q.getHint() == null || q.getHint().isEmpty() ? "No hint available" : q.getHint();
     }
 
     private void addCloseButton() {
